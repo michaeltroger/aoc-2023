@@ -10,9 +10,17 @@ val numbersMap = mapOf(
     "nine" to 9,
 )
 
-fun Int.orNullIfNotFound(): Int? {
+fun Int.orIntMinIfNotFound(): Int {
     return if (this == -1) {
-        null
+        Int.MIN_VALUE
+    } else {
+        this
+    }
+}
+
+fun Int.orIntMaxIfNotFound(): Int {
+    return if (this == -1) {
+        Int.MAX_VALUE
     } else {
         this
     }
@@ -35,23 +43,30 @@ fun main() {
         return input.sumOf { line ->
             val firstDigitIndex = line.indexOfFirst {
                 it.isDigit()
-            }.orNullIfNotFound() ?: Int.MAX_VALUE
+            }.orIntMaxIfNotFound()
             val lastDigitIndex = line.indexOfLast {
                 it.isDigit()
-            }.orNullIfNotFound() ?: Int.MIN_VALUE
+            }.orIntMinIfNotFound()
 
-            val firstStringMatchIndex = numbersMap.keys.minOf { number ->
-                line.indexOf(number).orNullIfNotFound() ?: Int.MAX_VALUE
+            fun getFirstMatchIndex(number: String): Int {
+                return line.indexOf(number).orIntMaxIfNotFound()
             }
-            val lastStringMatchIndex = numbersMap.keys.maxOf { number ->
-                line.lastIndexOf(number).orNullIfNotFound() ?: Int.MIN_VALUE
+            fun getLastMatchIndex(number: String): Int {
+                return line.lastIndexOf(number).orIntMinIfNotFound()
+            }
+
+            val firstStringMatchIndex = numbersMap.minOf { number ->
+                getFirstMatchIndex(number.key)
+            }
+            val lastStringMatchIndex = numbersMap.maxOf { number ->
+                getLastMatchIndex(number.key)
             }
 
             val firstDigit = if (firstDigitIndex <= firstStringMatchIndex) {
                 line[firstDigitIndex]
             } else {
                 numbersMap.minByOrNull { number ->
-                    line.indexOf(number.key).orNullIfNotFound() ?: Int.MAX_VALUE
+                    getFirstMatchIndex(number.key)
                 }!!.value
             }
 
@@ -59,7 +74,7 @@ fun main() {
                 line[lastDigitIndex]
             } else {
                 numbersMap.maxByOrNull { number ->
-                    line.lastIndexOf(number.key).orNullIfNotFound() ?: Int.MIN_VALUE
+                    getLastMatchIndex(number.key)
                 }!!.value
             }
 
