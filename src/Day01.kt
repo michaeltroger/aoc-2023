@@ -55,26 +55,26 @@ fun main() {
                 return line.lastIndexOf(number).orIntMinIfNotFound()
             }
 
-            val firstStringMatchIndex = numbersMap.minOf { number ->
-                getFirstMatchIndex(number.key)
+            val firstStringMatchIndex = numbersMap.minOf {
+                getFirstMatchIndex(it.key)
             }
-            val lastStringMatchIndex = numbersMap.maxOf { number ->
-                getLastMatchIndex(number.key)
+            val lastStringMatchIndex = numbersMap.maxOf {
+                getLastMatchIndex(it.key)
             }
 
             val firstDigit = if (firstDigitIndex <= firstStringMatchIndex) {
                 line[firstDigitIndex]
             } else {
-                numbersMap.minByOrNull { number ->
-                    getFirstMatchIndex(number.key)
+                numbersMap.minByOrNull {
+                    getFirstMatchIndex(it.key)
                 }!!.value
             }
 
             val lastDigit = if (lastDigitIndex >= lastStringMatchIndex) {
                 line[lastDigitIndex]
             } else {
-                numbersMap.maxByOrNull { number ->
-                    getLastMatchIndex(number.key)
+                numbersMap.maxByOrNull {
+                    getLastMatchIndex(it.key)
                 }!!.value
             }
 
