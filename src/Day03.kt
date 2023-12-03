@@ -48,7 +48,7 @@ fun main() {
             "[^A-Z0-9.]".toRegex().findAll(line).map {
                 it.range.first()
             }.map { y ->
-                val adjacentNumbers: List<Int> = listOf(
+                listOf(
                     x - 1 to y - 1,
                     x - 1 to y,
                     x - 1 to y + 1,
@@ -61,14 +61,13 @@ fun main() {
                     val (x1, y1) = it
                     numberArray.getOrNull(x1)?.getIfNotZero(y1)
                 }.distinct()
-
-                val adjacentNumberCount = adjacentNumbers.size
+            }.map {
                 when {
-                    adjacentNumberCount <= 1 -> 0
-                    adjacentNumberCount == 2 -> {
-                        adjacentNumbers.first() * adjacentNumbers.last()
+                    it.size <= 1 -> 0
+                    it.size == 2 -> {
+                        it.first() * it.last()
                     }
-                    adjacentNumberCount > 2 -> error("not allowed to have more than 2")
+                    it.size > 2 -> error("not allowed to have more than 2")
                     else -> error("should never happen")
                 }
             }.sum()
