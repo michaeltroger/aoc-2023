@@ -12,17 +12,14 @@ fun IntArray.getIfNotZero(index: Int): Int? {
 
 fun main() {
     fun part1(input: List<String>): Int {
-        val array = input.map { it.toCharArray() }.toTypedArray()
         return input.mapIndexed { lineNumber, lineText ->
            "[0-9]+".toRegex().findAll(lineText).sumOf {
-               val indexStart = it.range.first()
-               val indexEnd = it.range.last()
                var foundValidNumber = false
-               (indexStart-1..indexEnd+1).forEach { index ->
+               (it.range.first() - 1..it.range.last() + 1).forEach { index ->
                    if (
-                       array.getOrNull(lineNumber - 1)?.getOrNull(index)?.isSymbol() == true ||
-                       array.getOrNull(lineNumber)?.getOrNull(index)?.isSymbol() == true ||
-                       array.getOrNull(lineNumber + 1)?.getOrNull(index)?.isSymbol() == true
+                       input.getOrNull(lineNumber - 1)?.getOrNull(index)?.isSymbol() == true ||
+                       input.getOrNull(lineNumber)?.getOrNull(index)?.isSymbol() == true ||
+                       input.getOrNull(lineNumber + 1)?.getOrNull(index)?.isSymbol() == true
                    ) {
                        foundValidNumber = true
                    }
