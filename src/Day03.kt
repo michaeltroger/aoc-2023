@@ -13,28 +13,29 @@ fun IntArray.getIfNotZero(index: Int): Int? {
 fun main() {
     fun part1(input: List<String>): Int {
         return input.mapIndexed { lineNumber, lineText ->
-           "[0-9]+".toRegex().findAll(lineText).sumOf {
-               var foundValidNumber = false
-               (it.range.first() - 1..it.range.last() + 1).forEach { index ->
-                   if (
-                       input.getOrNull(lineNumber - 1)?.getOrNull(index)?.isSymbol() == true ||
-                       input.getOrNull(lineNumber)?.getOrNull(index)?.isSymbol() == true ||
-                       input.getOrNull(lineNumber + 1)?.getOrNull(index)?.isSymbol() == true
-                   ) {
-                       foundValidNumber = true
-                   }
-               }
-               if (foundValidNumber) {
-                   it.value.toInt()
-               } else {
-                   0
-               }
-            }
+            "[0-9]+".toRegex().findAll(lineText).map {
+                var foundValidNumber = false
+                (it.range.first() - 1..it.range.last() + 1).forEach { index ->
+                    if (
+                        input.getOrNull(lineNumber - 1)?.getOrNull(index)?.isSymbol() == true ||
+                        input.getOrNull(lineNumber)?.getOrNull(index)?.isSymbol() == true ||
+                        input.getOrNull(lineNumber + 1)?.getOrNull(index)?.isSymbol() == true
+                    ) {
+                        foundValidNumber = true
+                        return@forEach
+                    }
+                }
+                if (foundValidNumber) {
+                    it.value.toInt()
+                } else {
+                    0
+                }
+            }.sum()
         }.sum()
     }
 
     fun part2(input: List<String>): Int {
-        val numberArray: Array<IntArray> = Array(input.size) { IntArray(input[0].length) {0} }
+        val numberArray: Array<IntArray> = Array(input.size) { IntArray(input[0].length) { 0 } }
         input.forEachIndexed { lineNumber, lineText ->
             "[0-9]+".toRegex().findAll(lineText).forEach { match ->
                 (match.range.first..match.range.last).forEach { index ->
@@ -44,11 +45,9 @@ fun main() {
         }
 
         return input.mapIndexed { x, line ->
-            val symbolsInLine = "[^A-Z0-9.]".toRegex().findAll(line)
-            val yCoordinatesOfSymbols = symbolsInLine.map {
+            "[^A-Z0-9.]".toRegex().findAll(line).map {
                 it.range.first()
-            }
-            yCoordinatesOfSymbols.sumOf { y ->
+            }.sumOf { y ->
                 val adjacentNumbers: List<Int> = listOf(
                     x - 1 to y - 1,
                     x - 1 to y,
@@ -69,6 +68,7 @@ fun main() {
                     adjacentNumberCount == 2 -> {
                         adjacentNumbers.first() * adjacentNumbers.last()
                     }
+
                     adjacentNumberCount > 2 -> error("not allowed to have more than 2")
                     else -> error("should never happen")
                 }
