@@ -52,39 +52,25 @@ fun main() {
                 it.range.first()
             }
             yCoordinatesOfSymbols.sumOf { y ->
-                val adjacentNumbers: MutableList<Int> = mutableListOf()
+                val adjacentNumbers: List<Int> = listOf(
+                    x - 1 to y - 1,
+                    x - 1 to y,
+                    x - 1 to y + 1,
+                    x to y - 1,
+                    x to y + 1,
+                    x + 1 to y - 1,
+                    x + 1 to y,
+                    x + 1 to y + 1,
+                ).mapNotNull {
+                    val (x1, y1) = it
+                    numberArray.getOrNull(x1)?.getIfNotZero(y1)
+                }.distinct()
 
-                numberArray.getOrNull(x - 1)?.getIfNotZero(y - 1)?.let {
-                    adjacentNumbers.add(it)
-                }
-                numberArray.getOrNull(x - 1)?.getIfNotZero(y)?.let {
-                    adjacentNumbers.add(it)
-                }
-                numberArray.getOrNull(x - 1)?.getIfNotZero(y + 1)?.let {
-                    adjacentNumbers.add(it)
-                }
-                numberArray.getOrNull(x)?.getIfNotZero(y - 1)?.let {
-                    adjacentNumbers.add(it)
-                }
-                numberArray.getOrNull(x)?.getIfNotZero(y + 1)?.let {
-                    adjacentNumbers.add(it)
-                }
-                numberArray.getOrNull(x + 1)?.getIfNotZero(y - 1)?.let {
-                    adjacentNumbers.add(it)
-                }
-                numberArray.getOrNull(x + 1)?.getIfNotZero(y)?.let {
-                    adjacentNumbers.add(it)
-                }
-                numberArray.getOrNull(x + 1)?.getIfNotZero(y + 1)?.let {
-                    adjacentNumbers.add(it)
-                }
-
-                val distinct = adjacentNumbers.distinct()
-                val adjacentNumberCount = distinct.size
+                val adjacentNumberCount = adjacentNumbers.size
                 when {
                     adjacentNumberCount <= 1 -> 0
                     adjacentNumberCount == 2 -> {
-                        distinct.first() * distinct.last()
+                        adjacentNumbers.first() * adjacentNumbers.last()
                     }
                     adjacentNumberCount > 2 -> error("not allowed to have more than 2")
                     else -> error("should never happen")
