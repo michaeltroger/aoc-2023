@@ -68,7 +68,6 @@ fun main() {
                     adjacentNumberCount == 2 -> {
                         adjacentNumbers.first() * adjacentNumbers.last()
                     }
-
                     adjacentNumberCount > 2 -> error("not allowed to have more than 2")
                     else -> error("should never happen")
                 }
