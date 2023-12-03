@@ -63,7 +63,7 @@ fun main() {
                 }.distinct()
             }.map {
                 when {
-                    it.size <= 1 -> 0
+                    it.size < 2 -> 0
                     it.size == 2 -> {
                         it.first() * it.last()
                     }
