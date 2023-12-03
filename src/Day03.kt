@@ -47,7 +47,7 @@ fun main() {
         return input.mapIndexed { x, line ->
             "[^A-Z0-9.]".toRegex().findAll(line).map {
                 it.range.first()
-            }.sumOf { y ->
+            }.map { y ->
                 val adjacentNumbers: List<Int> = listOf(
                     x - 1 to y - 1,
                     x - 1 to y,
@@ -72,7 +72,7 @@ fun main() {
                     adjacentNumberCount > 2 -> error("not allowed to have more than 2")
                     else -> error("should never happen")
                 }
-            }
+            }.sum()
         }.sum()
     }
 
