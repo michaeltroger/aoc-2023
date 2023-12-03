@@ -2,6 +2,14 @@ fun Char.isSymbol(): Boolean {
     return !this.isDigit() && this != '.'
 }
 
+fun IntArray.getIfNotZero(index: Int): Int? {
+    return if (getOrNull(index) != 0 && getOrNull(index) != null) {
+        getOrNull(index)
+    } else {
+        null
+    }
+}
+
 fun main() {
     fun part1(input: List<String>): Int {
         val array = input.map { it.toCharArray() }.toTypedArray()
@@ -46,38 +54,29 @@ fun main() {
             yCoordinatesOfSymbols.sumOf { y ->
                 val adjacentNumbers: MutableList<Int> = mutableListOf()
 
-                val a = numberArray.getOrNull(x - 1)?.getOrNull(y -1)
-                val b = numberArray.getOrNull(x - 1)?.getOrNull(y)
-                val c = numberArray.getOrNull(x - 1)?.getOrNull(y +1)
-                val d = numberArray.getOrNull(x)?.getOrNull(y -1)
-                val f = numberArray.getOrNull(x)?.getOrNull(y + 1)
-                val g = numberArray.getOrNull(x + 1)?.getOrNull(y -1)
-                val h = numberArray.getOrNull(x + 1)?.getOrNull(y)
-                val i = numberArray.getOrNull(x + 1)?.getOrNull(y +1)
-
-                if (a != null && a != 0) {
-                    adjacentNumbers.add(a)
+                numberArray.getOrNull(x - 1)?.getIfNotZero(y - 1)?.let {
+                    adjacentNumbers.add(it)
                 }
-                if (b != null && b != 0) {
-                    adjacentNumbers.add(b)
+                numberArray.getOrNull(x - 1)?.getIfNotZero(y)?.let {
+                    adjacentNumbers.add(it)
                 }
-                if (c != null && c != 0) {
-                    adjacentNumbers.add(c)
+                numberArray.getOrNull(x - 1)?.getIfNotZero(y + 1)?.let {
+                    adjacentNumbers.add(it)
                 }
-                if (d != null && d != 0) {
-                    adjacentNumbers.add(d)
+                numberArray.getOrNull(x)?.getIfNotZero(y - 1)?.let {
+                    adjacentNumbers.add(it)
                 }
-                if (f != null && f != 0) {
-                    adjacentNumbers.add(f)
+                numberArray.getOrNull(x)?.getIfNotZero(y + 1)?.let {
+                    adjacentNumbers.add(it)
                 }
-                if (g != null && g != 0) {
-                    adjacentNumbers.add(g)
+                numberArray.getOrNull(x + 1)?.getIfNotZero(y - 1)?.let {
+                    adjacentNumbers.add(it)
                 }
-                if (h != null && h != 0) {
-                    adjacentNumbers.add(h)
+                numberArray.getOrNull(x + 1)?.getIfNotZero(y)?.let {
+                    adjacentNumbers.add(it)
                 }
-                if (i != null && i != 0) {
-                    adjacentNumbers.add(i)
+                numberArray.getOrNull(x + 1)?.getIfNotZero(y + 1)?.let {
+                    adjacentNumbers.add(it)
                 }
 
                 val distinct = adjacentNumbers.distinct()
