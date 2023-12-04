@@ -14,7 +14,7 @@ fun String.parseCard(): Card {
         .filter { it.isNotBlank() }
         .map { it.trim() }
         .map { it.toInt() }
-    
+
     return Card(
         cardNumber,
         winningNumbers,
@@ -71,10 +71,8 @@ fun main() {
             card.cardNr to correctCount
         }.forEach {
             val (cardNr, correctCount) = it
-            repeat(cardCount[cardNr]!!) {
-                (cardNr + 1..cardNr + correctCount).forEach { index ->
-                    cardCount[index] = cardCount[index]!!.plus(1)
-                }
+            (cardNr + 1..cardNr + correctCount).forEach { index ->
+                cardCount[index] = cardCount[index]!! + cardCount[cardNr]!!
             }
         }
 
