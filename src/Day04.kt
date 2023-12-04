@@ -44,8 +44,12 @@ fun main() {
                 }
             }
             correctCount
-        }.sumOf {
-            2.0.pow(it.toDouble() - 1).toInt()
+        }.sumOf { count ->
+            when (count) {
+                0 -> 0
+                1 -> 1
+                else -> 2.0.pow(count.toDouble() - 1).toInt()
+            }
         }
     }
 
