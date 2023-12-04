@@ -68,11 +68,11 @@ fun main() {
                     }
                 }
             }
-            card to correctCount
+            card.cardNr to correctCount
         }.forEach {
-            val (card, correctCount) = it
-            repeat(cardCount[card.cardNr]!!) {
-                (card.cardNr + 1..card.cardNr + correctCount).forEach { index ->
+            val (cardNr, correctCount) = it
+            repeat(cardCount[cardNr]!!) {
+                (cardNr + 1..cardNr + correctCount).forEach { index ->
                     cardCount[index] = cardCount[index]!!.plus(1)
                 }
             }
