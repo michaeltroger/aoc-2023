@@ -28,8 +28,6 @@ data class Card(
     val ownNumbers: List<Int>,
 )
 
-val cardCount: MutableMap<Int, Int> = mutableMapOf()
-
 fun main() {
     fun part1(input: List<String>): Int {
         return input.map {
@@ -54,6 +52,7 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
+        val cardCount: MutableMap<Int, Int> = mutableMapOf()
         input.map {
             it.parseCard()
         }.map { card ->
