@@ -4,7 +4,6 @@ fun String.parseCard(): Card {
     val cardNumber = substringAfter("Card").substringBefore(":").trim().toInt()
     val numbers = substringAfter(": ")
         .split(" | ")
-
     val winningNumbers = numbers.first()
         .split(" ")
         .filter { it.isNotBlank() }
@@ -15,6 +14,7 @@ fun String.parseCard(): Card {
         .filter { it.isNotBlank() }
         .map { it.trim() }
         .map { it.toInt() }
+    
     return Card(
         cardNumber,
         winningNumbers,
