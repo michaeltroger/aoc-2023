@@ -67,7 +67,6 @@ fun main() {
                     it.size == 2 -> {
                         it.first() * it.last()
                     }
-                    it.size > 2 -> error("not allowed to have more than 2")
                     else -> error("should never happen")
                 }
             }.sum()
