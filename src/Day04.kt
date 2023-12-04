@@ -26,7 +26,6 @@ data class Card(
     val cardNr: Int,
     val winningNumbers: List<Int>,
     val ownNumbers: List<Int>,
-    var correctCount: Int = 0,
 )
 
 val cardCount: MutableMap<Int, Int> = mutableMapOf()
@@ -34,7 +33,8 @@ val cardCount: MutableMap<Int, Int> = mutableMapOf()
 fun main() {
     fun part1(input: List<String>): Int {
         return input.map {
-            val card = it.parseCard()
+            it.parseCard()
+        }.map { card ->
             var correctCount = 0
             card.ownNumbers.forEach { myNumber ->
                 card.winningNumbers.forEach { winningNumber ->
@@ -56,25 +56,23 @@ fun main() {
     fun part2(input: List<String>): Int {
         input.map {
             it.parseCard()
-        }.map {
-            cardCount[it.cardNr] = 1
-            it
-        }.map {
+        }.map { card ->
+            cardCount[card.cardNr] = 1
+            card
+        }.map { card ->
             var correctCount = 0
-            it.ownNumbers.forEach { myNumber ->
-                it.winningNumbers.forEach { winningNumber ->
+            card.ownNumbers.forEach { myNumber ->
+                card.winningNumbers.forEach { winningNumber ->
                     if (myNumber == winningNumber) {
                         correctCount++
                     }
                 }
             }
-            it.correctCount = correctCount
-            it
+            card to correctCount
         }.forEach {
-            val correctCount = it.correctCount
-            val cardNumber = it.cardNr
-            repeat(cardCount[cardNumber]!!) {
-                (cardNumber + 1..cardNumber + correctCount).forEach { index ->
+            val (card, correctCount) = it
+            repeat(cardCount[card.cardNr]!!) {
+                (card.cardNr + 1..card.cardNr + correctCount).forEach { index ->
                     cardCount[index] = cardCount[index]!!.plus(1)
                 }
             }
