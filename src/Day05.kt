@@ -96,6 +96,7 @@ fun main() {
     }
 
     fun part2(input: List<String>): Long {
+        val startTime = System.currentTimeMillis()
         val seedRange = input.parseSeedsAsRange()
         val seeds = seedRange.createSeedsFromRange()
         val maps = input.parseMaps()
@@ -103,7 +104,9 @@ fun main() {
         println("best estimated location: $location | best estimated seed: $seed")
 
         val generatedSeeds = seed.createSeedsFromEstimate(seedRange)
-        return maps.getMinimumLocationAndAssociatedSeed(generatedSeeds).first
+        val (bestLocation, _) = maps.getMinimumLocationAndAssociatedSeed(generatedSeeds)
+        println("Execution time ${((System.currentTimeMillis() - startTime) / 1000f)} seconds")
+        return bestLocation
     }
 
     // test if implementation meets criteria from the description, like:
