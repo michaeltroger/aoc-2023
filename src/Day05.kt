@@ -66,11 +66,11 @@ fun List<List<MapInput>>.getMinimumLocationAndSeed(seeds: List<Long>): Pair<Long
 }
 
 fun List<LongRange>.createSeedsFromRange(): List<Long> {
-    val divisionSteps = 100000
     return map {
-        val delta = ((it.last - it.first) / divisionSteps).coerceAtLeast(1)
+        val divisionCount = (it.last - it.first).coerceAtMost(100_000)
+        val delta = ((it.last - it.first) / divisionCount).coerceAtLeast(1)
 
-        (0..divisionSteps).map { some ->
+        (0..divisionCount).map { some ->
             it.first + delta * some
         }
     }.flatten()
@@ -87,7 +87,7 @@ fun main() {
         val seeds = seedRange.createSeedsFromRange()
         val temp = input.parseMaps().getMinimumLocationAndSeed(seeds)
 
-        val seeds1 = (temp.second-100000..temp.second+100000).toList().filter { num ->
+        val seeds1 = (temp.second-10_000..temp.second+10_000).toList().filter { num ->
             seedRange.find {
                 it.contains(num)
              } != null
