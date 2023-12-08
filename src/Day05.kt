@@ -77,7 +77,12 @@ fun List<LongRange>.createSeedsFromRange(): List<Long> {
 }
 
 fun Long.createSeedsFromEstimate(allowedRanges: List<LongRange>): List<Long> {
-    return (this-10_000..this+10_000).toList().filter { num ->
+    val range = allowedRanges.find {
+        it.contains(this)
+    }!!
+    val min = (this - 1_000).coerceAtLeast(range.first)
+    val max = (this + 1_000).coerceAtMost(range.last)
+    return (min..max).filter { num ->
         allowedRanges.find {
             it.contains(num)
         } != null
