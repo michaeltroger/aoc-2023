@@ -67,7 +67,7 @@ fun List<List<MapInput>>.getMinimumLocationAndAssociatedSeed(seeds: List<Long>):
 
 fun List<LongRange>.createSeedsFromRange(): List<Long> {
     return map {
-        val divisionCount = (it.last - it.first).coerceAtMost(100_000)
+        val divisionCount = (it.last - it.first).coerceAtMost(10_000)
         val delta = ((it.last - it.first) / divisionCount).coerceAtLeast(1)
 
         (0..divisionCount).map { some ->
@@ -80,8 +80,8 @@ fun Long.createSeedsFromEstimate(allowedRanges: List<LongRange>): List<Long> {
     val range = allowedRanges.find {
         it.contains(this)
     }!!
-    val min = (this - 1_000).coerceAtLeast(range.first)
-    val max = (this + 1_000).coerceAtMost(range.last)
+    val min = (this - 100_000).coerceAtLeast(range.first)
+    val max = this
     return (min..max).filter { num ->
         allowedRanges.find {
             it.contains(num)
