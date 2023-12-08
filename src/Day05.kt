@@ -68,10 +68,10 @@ fun List<List<MapInput>>.getMinimumLocationAndAssociatedSeed(seeds: List<Long>):
 fun List<LongRange>.createSeedsFromRange(): List<Long> {
     return map {
         val divisionCount = (it.last - it.first).coerceAtMost(10_000)
-        val delta = ((it.last - it.first) / divisionCount).coerceAtLeast(1)
+        val stepSize = ((it.last - it.first) / divisionCount).coerceAtLeast(1)
 
-        (0..divisionCount).map { some ->
-            it.first + delta * some
+        (0..divisionCount).map { multiplier ->
+            it.first + stepSize * multiplier
         }
     }.flatten()
 }
@@ -97,7 +97,7 @@ fun main() {
         val seeds = seedRange.createSeedsFromRange()
         val maps = input.parseMaps()
         val (location, seed) = maps.getMinimumLocationAndAssociatedSeed(seeds)
-        println("best estimated location: $location | best estimated seed: $seed")
+        println("best estimated location: $location | associated seed: $seed")
 
         val generatedSeeds = seed.createSeedsFromEstimate(seedRange)
         val (bestLocation, _) = maps.getMinimumLocationAndAssociatedSeed(generatedSeeds)
