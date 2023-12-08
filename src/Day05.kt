@@ -47,7 +47,7 @@ fun List<String>.parseSeedsAsRange(): List<LongRange> {
     return seedRanges
 }
 
-fun List<List<MapInput>>.getMinimumLocation(seeds: List<Long>): Pair<Long, Long> {
+fun List<List<MapInput>>.getMinimumLocationAndSeed(seeds: List<Long>): Pair<Long, Long> {
     return seeds.map { s ->
         val location = fold(s) { seed, listInput ->
             val mapInput = listInput.find {
@@ -80,13 +80,13 @@ fun List<LongRange>.createSeedsFromRange(): List<Long> {
 fun main() {
     fun part1(input: List<String>): Long {
         val seeds = input.parseSeeds()
-        return input.parseMaps().getMinimumLocation(seeds).first
+        return input.parseMaps().getMinimumLocationAndSeed(seeds).first
     }
 
     fun part2(input: List<String>): Long {
         val seedRange = input.parseSeedsAsRange()
         val seeds = seedRange.createSeedsFromRange()
-        val temp = input.parseMaps().getMinimumLocation(seeds)
+        val temp = input.parseMaps().getMinimumLocationAndSeed(seeds)
 
         val seeds1 = (temp.second-100000..temp.second+100000).toList().filter { num ->
             seedRange.find {
@@ -94,7 +94,7 @@ fun main() {
              } != null
         }
 
-        return input.parseMaps().getMinimumLocation(seeds1).first
+        return input.parseMaps().getMinimumLocationAndSeed(seeds1).first
     }
 
     // test if implementation meets criteria from the description, like:
