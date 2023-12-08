@@ -99,10 +99,11 @@ fun main() {
         val seedRange = input.parseSeedsAsRange()
         val seeds = seedRange.createSeedsFromRange()
         val maps = input.parseMaps()
-        val (_, seed) = maps.getMinimumLocationAndAssociatedSeed(seeds)
+        val (location, seed) = maps.getMinimumLocationAndAssociatedSeed(seeds)
+        println("best estimated location: $location | best estimated seed: $seed")
 
-        val enhancedSeeds = seed.createSeedsFromEstimate(seedRange)
-        return maps.getMinimumLocationAndAssociatedSeed(enhancedSeeds).first
+        val generatedSeeds = seed.createSeedsFromEstimate(seedRange)
+        return maps.getMinimumLocationAndAssociatedSeed(generatedSeeds).first
     }
 
     // test if implementation meets criteria from the description, like:
