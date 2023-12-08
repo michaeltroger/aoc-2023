@@ -76,6 +76,14 @@ fun List<LongRange>.createSeedsFromRange(): List<Long> {
     }.flatten()
 }
 
+fun Long.createSeedsFromEstimate(allowedRanges: List<LongRange>): List<Long> {
+    return (this-10_000..this+10_000).toList().filter { num ->
+        allowedRanges.find {
+            it.contains(num)
+        } != null
+    }
+}
+
 fun main() {
     fun part1(input: List<String>): Long {
         val seeds = input.parseSeeds()
@@ -85,15 +93,11 @@ fun main() {
     fun part2(input: List<String>): Long {
         val seedRange = input.parseSeedsAsRange()
         val seeds = seedRange.createSeedsFromRange()
-        val temp = input.parseMaps().getMinimumLocationAndSeed(seeds)
+        val maps = input.parseMaps()
+        val (_, seed) = maps.getMinimumLocationAndSeed(seeds)
 
-        val seeds1 = (temp.second-10_000..temp.second+10_000).toList().filter { num ->
-            seedRange.find {
-                it.contains(num)
-             } != null
-        }
-
-        return input.parseMaps().getMinimumLocationAndSeed(seeds1).first
+        val enhancedSeeds = seed.createSeedsFromEstimate(seedRange)
+        return maps.getMinimumLocationAndSeed(enhancedSeeds).first
     }
 
     // test if implementation meets criteria from the description, like:
