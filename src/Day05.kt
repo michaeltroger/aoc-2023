@@ -48,21 +48,20 @@ fun List<String>.parseSeedsAsRange(): List<LongRange> {
 }
 
 fun List<List<MapInput>>.getMinimumLocationAndSeed(seeds: List<Long>): Pair<Long, Long> {
-    return seeds.map { s ->
-        val location = fold(s) { seed, listInput ->
-            val mapInput = listInput.find {
-                it.sourceRange.contains(seed)
+    return seeds.map { seed ->
+        fold(seed) { acc, map ->
+            val mapInput = map.find {
+                it.sourceRange.contains(acc)
             }
 
             when (mapInput) {
-                null -> seed
+                null -> acc
                 else -> {
-                    val index = seed - mapInput.sourceRange.first
+                    val index = acc - mapInput.sourceRange.first
                     mapInput.destinationRange.first +index
                 }
             }
-        }
-        location to s
+        } to seed
     }.minByOrNull { it.first }!!
 }
 
