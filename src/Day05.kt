@@ -82,11 +82,7 @@ fun Long.createSeedsFromEstimate(allowedRanges: List<LongRange>): List<Long> {
     }!!
     val min = (this - 100_000).coerceAtLeast(range.first)
     val max = this
-    return (min..max).filter { num ->
-        allowedRanges.find {
-            it.contains(num)
-        } != null
-    }
+    return (min..max).toList()
 }
 
 fun main() {
