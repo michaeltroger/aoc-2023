@@ -41,6 +41,7 @@ fun main() {
         val x: Int,
         val y: Int,
     )
+
     data class Vertex(
         val coordinates: Coordinates,
         val data: Pipe,
@@ -56,35 +57,27 @@ fun main() {
         }
     }
 
-    fun addToMap(adjacencyMap: MutableMap<Vertex, List<Vertex>>, data: Vertex, input: Array<Array<Vertex>>) {
-        val x = data.coordinates.x
-        val y = data.coordinates.y
-        val neighbors = when(data.data) {
-            Pipe.VERTICAL -> Coordinates(x - 1, y) to Coordinates(x + 1, y)
-            Pipe.HORIZONTAL -> Coordinates(x, y - 1) to Coordinates(x, y + 1)
-            Pipe.NORTH_EAST -> Coordinates(x - 1, y) to Coordinates(x, y + 1)
-            Pipe.NORTH_WEST -> Coordinates(x - 1, y) to Coordinates(x, y - 1)
-            Pipe.SOUTH_WEST -> Coordinates(x + 1, y) to Coordinates(x, y - 1)
-            Pipe.SOUTH_EAST -> Coordinates(x + 1, y) to Coordinates(x, y + 1)
-            Pipe.STARTING_POSITION -> Coordinates(-1, -1) to Coordinates(-1, -1)
-            Pipe.NO_PIPE -> Coordinates(-1, -1) to Coordinates(-1, -1)
-        }.let {
-            val first = input.getOrNull(it.first.x)?.getOrNull(it.first.y)?.data
-            val second = input.getOrNull(it.second.x)?.getOrNull(it.second.y)?.data
-            if (first == null || second == null) {
-                emptyList()
-            } else {
-                listOf(Vertex(it.first, first), Vertex(it.second, second))
-            }
+    fun addNeighborsToAdjacencyMap(adjacencyMap: MutableMap<Vertex, List<Vertex>>, vertex: Vertex, allVertices: Array<Array<Vertex>>) {
+        val (x, y) = vertex.coordinates
+        val neighbors = when (vertex.data) {
+            Pipe.VERTICAL -> listOf(Coordinates(x - 1, y), Coordinates(x + 1, y))
+            Pipe.HORIZONTAL -> listOf(Coordinates(x, y - 1), Coordinates(x, y + 1))
+            Pipe.NORTH_EAST -> listOf(Coordinates(x - 1, y), Coordinates(x, y + 1))
+            Pipe.NORTH_WEST -> listOf(Coordinates(x - 1, y), Coordinates(x, y - 1))
+            Pipe.SOUTH_WEST -> listOf(Coordinates(x + 1, y), Coordinates(x, y - 1))
+            Pipe.SOUTH_EAST -> listOf(Coordinates(x + 1, y), Coordinates(x, y + 1))
+            Pipe.STARTING_POSITION -> listOf(Coordinates(-1, -1), Coordinates(-1, -1))
+            Pipe.NO_PIPE -> listOf(Coordinates(-1, -1), Coordinates(-1, -1))
+        }.mapNotNull {
+            allVertices.getOrNull(it.x)?.getOrNull(it.y)
         }
-        adjacencyMap[data] = neighbors
+        adjacencyMap[vertex] = neighbors
     }
 
     fun printAnimal(input: List<String>, animal: List<Vertex>) {
-        val animalDrawing = Array(input.size) { Array(input.first().length) { ' ' }}.also { drawing ->
-            animal.forEach {
-                drawing[it.coordinates.x][it.coordinates.y] = it.drawableChar
-            }
+        val animalDrawing = Array(input.size) { Array(input.first().length) { ' ' }}
+        animal.forEach {
+            animalDrawing[it.coordinates.x][it.coordinates.y] = it.drawableChar
         }
         animalDrawing.forEach {
             println(it.joinToString(" "))
@@ -92,21 +85,23 @@ fun main() {
     }
 
     fun parseAnimal(input: List<String>): MutableList<Vertex> {
-        val map = input.mapIndexed { x, line ->
-            line.toCharArray().mapIndexed { y, char ->
+        val allVertices = input.mapIndexed { x, line ->
+            line.mapIndexed { y, char ->
                 Vertex(Coordinates(x, y), characterToPipeMap[char]!!)
             }.toTypedArray()
         }.toTypedArray()
 
-        val adjacencyMap: MutableMap<Vertex, List<Vertex>> = mutableMapOf()
-        map.forEach {
-            it.forEach {
-                addToMap(adjacencyMap, it, map)
+        val adjacencyMap: Map<Vertex, List<Vertex>> = buildMap {
+            allVertices.forEach { line ->
+                line.forEach { vertex ->
+                    addNeighborsToAdjacencyMap(this, vertex, allVertices)
+                }
             }
         }
+
         var startX = 0
         var startY = 0
-        map.forEachIndexed { x, line ->
+        allVertices.forEachIndexed { x, line ->
             val y = line.indexOfFirst { it.data == Pipe.STARTING_POSITION }
             if (y != -1) {
                 startX = x
