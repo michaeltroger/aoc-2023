@@ -161,8 +161,8 @@ private fun Array<Array<Space>>.print() {
 
 private fun List<String>.parseImage(): Array<Array<Space>> {
     return map {
-        it.map {
-            Space.fromChar(it)
+        it.map { char ->
+            Space.fromChar(char)
         }.toTypedArray()
     }.toTypedArray()
 }
