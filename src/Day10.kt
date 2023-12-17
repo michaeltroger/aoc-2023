@@ -1,42 +1,34 @@
 import kotlin.math.absoluteValue
 
-enum class Pipe {
-    VERTICAL,
-    HORIZONTAL,
-    NORTH_EAST,
-    NORTH_WEST,
-    SOUTH_WEST,
-    SOUTH_EAST,
-    STARTING_POSITION,
-    NO_PIPE,
+enum class Pipe(private val char: Char) {
+    VERTICAL('|'),
+    HORIZONTAL('-'),
+    NORTH_EAST('L'),
+    NORTH_WEST('J'),
+    SOUTH_WEST('7'),
+    SOUTH_EAST('F'),
+    STARTING_POSITION('S'),
+    NO_PIPE('.');
+
+    companion object {
+        fun fromChar(char: Char) = entries.find { it.char == char }!!
+    }
+
+    override fun toString(): String {
+        return when (this) {
+            VERTICAL -> '│'
+            HORIZONTAL -> '─'
+            NORTH_EAST -> '└'
+            NORTH_WEST -> '┘'
+            SOUTH_WEST -> '┐'
+            SOUTH_EAST -> '┌'
+            NO_PIPE -> '.'
+            STARTING_POSITION -> 'S'
+        }.toString()
+    }
 }
 
 fun main() {
-
-    val characterToPipeMap = mapOf(
-        '|' to Pipe.VERTICAL,
-        '-' to Pipe.HORIZONTAL,
-        'L' to Pipe.NORTH_EAST,
-        'J' to Pipe.NORTH_WEST,
-        '7' to Pipe.SOUTH_WEST,
-        'F' to Pipe.SOUTH_EAST,
-        '.' to Pipe.NO_PIPE,
-        'S' to Pipe.STARTING_POSITION,
-    )
-
-    val pipeToCharacterMap = characterToPipeMap.map { (k, v) -> v to k }.toMap()
-
-    val pipeToDrawableCharacterMap = mapOf(
-        Pipe.VERTICAL to '│',
-        Pipe.HORIZONTAL to '─',
-        Pipe.NORTH_EAST to '└',
-        Pipe.NORTH_WEST to '┘',
-        Pipe.SOUTH_WEST to '┐',
-        Pipe.SOUTH_EAST to '┌',
-        Pipe.NO_PIPE to '.',
-        Pipe.STARTING_POSITION to 'S',
-    )
-
     data class Coordinates(
         val x: Int,
         val y: Int,
@@ -45,17 +37,7 @@ fun main() {
     data class Vertex(
         val coordinates: Coordinates,
         val data: Pipe,
-    ) {
-        val char: Char
-            get() = pipeToCharacterMap[data]!!
-
-        val drawableChar: Char
-            get() = pipeToDrawableCharacterMap[data]!!
-
-        override fun toString(): String {
-            return "${coordinates.x}/${coordinates.y} $data $char"
-        }
-    }
+    )
 
     fun addNeighborsToAdjacencyMap(adjacencyMap: MutableMap<Vertex, List<Vertex>>, vertex: Vertex, allVertices: Array<Array<Vertex>>) {
         val (x, y) = vertex.coordinates
@@ -75,9 +57,9 @@ fun main() {
     }
 
     fun printAnimal(input: List<String>, animal: List<Vertex>) {
-        val animalDrawing = Array(input.size) { Array(input.first().length) { ' ' }}
+        val animalDrawing = Array(input.size) { Array(input.first().length) { Pipe.NO_PIPE }}
         animal.forEach {
-            animalDrawing[it.coordinates.x][it.coordinates.y] = it.drawableChar
+            animalDrawing[it.coordinates.x][it.coordinates.y] = it.data
         }
         animalDrawing.forEach {
             println(it.joinToString(" "))
@@ -87,7 +69,7 @@ fun main() {
     fun parseAnimal(input: List<String>): List<Vertex> {
         val allVertices = input.mapIndexed { x, line ->
             line.mapIndexed { y, char ->
-                Vertex(Coordinates(x, y), characterToPipeMap[char]!!)
+                Vertex(Coordinates(x, y), Pipe.fromChar(char))
             }.toTypedArray()
         }.toTypedArray()
 
