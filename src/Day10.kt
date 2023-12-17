@@ -144,24 +144,34 @@ fun main() {
         return animal
     }
 
-    fun shoelaceAlgorithm(data: List<Vertex>): Int {
-        val area = (0..data.size-2).sumOf { i->
+    /**
+     * Algorithm: Shoelace
+     * https://en.wikipedia.org/wiki/Shoelace_formula
+     */
+    fun calculateArea(data: List<Vertex>): Int {
+        return (0..data.size-2).sumOf { i->
             data[i].coordinates.x * data[i+1].coordinates.y -
                     data[i+1].coordinates.x * data[i].coordinates.y
         }.div(2).absoluteValue
-        return area - data.size.div(2).minus(1)
+    }
+
+    /**
+     * Algorithm: Pick's theorem
+     * https://en.wikipedia.org/wiki/Pick%27s_theorem
+     */
+    fun calculateAreaWithoutInteriorPoints(data: List<Vertex>): Int {
+        return data.size / 2 - 1
     }
 
     fun part1(input: List<String>): Int {
         val animal = parseAnimal(input)
-        return animal.size/2
+        return animal.size / 2
     }
 
     fun part2(input: List<String>): Int {
         val animal = parseAnimal(input)
         printAnimal(input, animal)
-
-        return shoelaceAlgorithm(animal)
+        return calculateArea(animal) - calculateAreaWithoutInteriorPoints(animal)
     }
 
     // test if implementation meets criteria from the description, like:
