@@ -26,7 +26,7 @@ fun main() {
 
     val pipeToCharacterMap = characterToPipeMap.map { (k, v) -> v to k }.toMap()
 
-    val pipeToDrawableCharacter = mapOf(
+    val pipeToDrawableCharacterMap = mapOf(
         Pipe.VERTICAL to '│',
         Pipe.HORIZONTAL to '─',
         Pipe.NORTH_EAST to '└',
@@ -50,7 +50,7 @@ fun main() {
             get() = pipeToCharacterMap[data]!!
 
         val drawableChar: Char
-            get() = pipeToDrawableCharacter[data]!!
+            get() = pipeToDrawableCharacterMap[data]!!
 
         override fun toString(): String {
             return "${coordinates.x}/${coordinates.y} $data $char"
@@ -84,14 +84,14 @@ fun main() {
         }
     }
 
-    fun parseAnimal(input: List<String>): MutableList<Vertex> {
+    fun parseAnimal(input: List<String>): List<Vertex> {
         val allVertices = input.mapIndexed { x, line ->
             line.mapIndexed { y, char ->
                 Vertex(Coordinates(x, y), characterToPipeMap[char]!!)
             }.toTypedArray()
         }.toTypedArray()
 
-        val adjacencyMap: Map<Vertex, List<Vertex>> = buildMap {
+        val adjacencyMap = buildMap {
             allVertices.forEach { line ->
                 line.forEach { vertex ->
                     addNeighborsToAdjacencyMap(this, vertex, allVertices)
@@ -109,33 +109,34 @@ fun main() {
                 return@forEachIndexed
             }
         }
-        val startCoordinates = Vertex(Coordinates(startX, startY), Pipe.STARTING_POSITION)
-        val neighborsStart: MutableList<Vertex> = mutableListOf()
-        adjacencyMap.forEach {
-            if (it.value.find { it.data == Pipe.STARTING_POSITION } != null) {
-                neighborsStart.add(it.key)
+        val startVertex = Vertex(Coordinates(startX, startY), Pipe.STARTING_POSITION)
+        val neighborsOfStart = adjacencyMap.mapNotNull {
+            if (it.value.contains(startVertex)) {
+                it.key
+            } else {
+                null
             }
         }
-        val first = neighborsStart.first()
-        val last = neighborsStart.last()
+        val first = neighborsOfStart.first()
+        val last = neighborsOfStart.last()
 
-        var previousLocation: Vertex = startCoordinates
+        var previousLocation: Vertex = startVertex
         var currentLocation: Vertex = first
-        val animal = mutableListOf(startCoordinates)
+        val animal = mutableListOf(startVertex)
         while (currentLocation != last) {
             animal.add(currentLocation)
             val firstNeighbor = adjacencyMap[currentLocation]!!.first()
             val secondNeighbor = adjacencyMap[currentLocation]!!.last()
-            if (firstNeighbor != previousLocation && firstNeighbor != startCoordinates) {
+            if (firstNeighbor != previousLocation && firstNeighbor != startVertex) {
                 previousLocation = currentLocation
                 currentLocation = firstNeighbor
-            } else if (secondNeighbor != previousLocation && secondNeighbor != startCoordinates) {
+            } else if (secondNeighbor != previousLocation && secondNeighbor != startVertex) {
                 previousLocation = currentLocation
                 currentLocation = secondNeighbor
             }
         }
         animal.add(currentLocation)
-        animal.add(startCoordinates)
+        animal.add(startVertex)
         return animal
     }
 
