@@ -27,6 +27,7 @@ fun main() {
             val (xFirst, yFirst) = it.first
             val (xSecond, ySecond) = it.second
 
+            // Manhattan distance
             (xFirst-xSecond).absoluteValue + (yFirst-ySecond).absoluteValue
         }
     }
@@ -44,32 +45,21 @@ fun main() {
             1_000_000L
         }
 
-        return pairs.sumOf {
-            val (xFirst, yFirst) = it.first
-            val (xSecond, ySecond) = it.second
+        return pairs.sumOf { pair ->
+            val (xFirst, yFirst) = pair.first
+            val (xSecond, ySecond) = pair.second
 
-            val distance = (xFirst-xSecond).absoluteValue + (yFirst-ySecond).absoluteValue
-
-            val xRange = if (xFirst < xSecond) {
-                xFirst..xSecond
-            } else {
-                xSecond..xFirst
-            }
-
-            val yRange = if (yFirst < ySecond) {
-                yFirst..ySecond
-            } else {
-                ySecond..yFirst
-            }
-
-            val effectedRows = xRange.count {
+            val effectedRows = (minOf(xFirst, xSecond)..maxOf(xFirst, xSecond)).count {
                 rowIndices.contains(it)
             }
-            val effectedColumns = yRange.count {
+            val effectedColumns = (minOf(yFirst, ySecond)..maxOf(yFirst, ySecond)).count {
                 columnIndices.contains(it)
             }
 
-            distance + effectedRows * multiplicator - effectedRows + effectedColumns * multiplicator - effectedColumns
+            // Manhattan distance
+            (xFirst-xSecond).absoluteValue + (yFirst-ySecond).absoluteValue +
+                    effectedRows * multiplicator - effectedRows +
+                    effectedColumns * multiplicator - effectedColumns
         }
     }
 
